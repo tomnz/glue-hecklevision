@@ -1,5 +1,5 @@
 const MESSAGE_POLL_MS = 2000;
-const MESSAGE_SHOW_MS = 10000;
+const MESSAGE_SHOW_MS = 20000;
 
 let lastTimestamp = new Date().getTime() / 1000;
 
