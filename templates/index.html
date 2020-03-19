@@ -4,10 +4,11 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-    <div class="container">
-        <div id="messages"></div>
+    <div id="container" class="empty">
+        <div id="messagesRemaining"></div>
+        <div id="messageContainer">
+            <div id="message"></div>
+        </div>
     </div>
-    <script type="text/javascript">
-
-    </script>
+    <script type="text/javascript" src="{{ url_for('static', filename='main.js') }}"></script>
 </body>

@@ -1,5 +1,5 @@
 import collections
-import datetime
+import time
 
 import flask
 
@@ -20,10 +20,10 @@ class Message(object):
     def __init__(self, author, text):
         self.author = author
         self.text = text
-        self.timestamp = datetime.datetime.utcnow().timestamp()
+        self.timestamp = time.time()
 
 
-@app.route('/post', method='POST')
+@app.route('/post', methods=['POST'])
 def post():
     data = flask.request.form
     text = data.get('text', None)
@@ -55,18 +55,24 @@ def post():
     })
 
 
-@app.route('/get', method='GET')
+@app.route('/get', methods=['GET'])
 def get():
+    after = flask.request.args.get('after', None)
+    if after:
+        response_messages = filter(lambda msg: msg.timestamp > float(after), messages)
+    else:
+        response_messages = messages
+
     return flask.jsonify([
         {
             'author': message.author,
             'text': message.text,
             'timestamp': message.timestamp,
-        } for message in messages
+        } for message in response_messages
     ])
 
 
-@app.route('/', method='GET')
+@app.route('/', methods=['GET'])
 def index():
     return flask.render_template('index.html')
 
