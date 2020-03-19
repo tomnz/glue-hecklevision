@@ -13,7 +13,7 @@ messages = collections.deque()
 
 def cleanup_messages():
     while len(messages) > MESSAGE_HISTORY:
-        messages.pop()
+        messages.popleft()
 
 
 class Message(object):
@@ -44,7 +44,7 @@ def post():
             'text': 'Hmm, I didn\'t get a user... Is this even possible??',
         })
 
-    messages.appendleft(Message(
+    messages.append(Message(
         author=user_name,
         text=text,
     ))
