@@ -1,61 +1,124 @@
 html, body {
-    background-color: rgba(0, 0, 0, 0);
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    overflow: hidden;
+  background-color: rgba(0, 0, 0, 0);
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
 }
 
 body {
-    font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
-    font-size: 28pt;
-    color: #FFFFFF;
+  font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
+  font-size: 28pt;
+  color: #FFFFFF;
 }
 
 #container {
-    width: 100%;
-    height: 100%;
-    vertical-align: bottom;
+  width: 100%;
+  height: 100%;
+  vertical-align: bottom;
 }
 
 #messages {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: nowrap;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-/* Overload occurs when more than a certain number of messages appear */
-.messageOverloadLow {
-    font-size: 20pt;
-}
-
-.messageOverloadLow > .message {
-    padding: 3px 12px !important;
-}
-
-.messageOverloadHigh {
-    font-size: 14pt;
-}
-
-.messageOverloadHigh > .message {
-    padding: 1px 8px !important;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .message {
-    background-color: #000000;
-    margin: 0 auto;
-    padding: 5px 15px;
-    display: inline-block;
+  background-color: #000000;
+  margin: 0 auto;
+  padding: 5px 15px;
+  display: inline-block;
 }
 
-
 .messageAuthor {
-    font-style: italic;
+  font-style: italic;
 }
 
 .messageText {
-    font-weight: bold;
+  font-weight: bold;
+}
+
+/*
+Overload occurs when more than a certain number of messages appear - we want to reduce the font size and
+padding for each message to make more space.
+*/
+.messageOverloadLow {
+  font-size: 20pt;
+}
+
+.messageOverloadLow > .message {
+  padding: 3px 12px !important;
+}
+
+.messageOverloadHigh {
+  font-size: 14pt;
+}
+
+.messageOverloadHigh > .message {
+  padding: 1px 8px !important;
+}
+
+/*
+Styling for a basic progress spinner beside each message.
+Note that animation duration should match MESSAGE_SHOW_MS in main.js.
+*/
+
+.spinnerContainer {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  background: #000000;
+}
+
+.spinnerContainer > .pie {
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  background: #aadfaa;
+}
+
+.spinnerContainer > .spinner {
+  border-radius: 0 10px 10px 0;
+  right: 0;
+  z-index: 200;
+  animation: rota 20s linear;
+}
+
+.spinnerContainer > .filler {
+  border-radius: 10px 0 0 10px;
+  z-index: 100;
+  animation: fill 20s steps(1, end);
+  left: 50%;
+  opacity: 0;
+}
+
+.spinnerContainer > .mask {
+  width: 50%;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  z-index: 300;
+  opacity: 1;
+  background: inherit;
+  animation: mask 20s steps(1, end);
+}
+
+@keyframes rota {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fill {
+  0%        { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes mask {
+  0%        { opacity: 0; }
+  50%, 100% { opacity: 1; }
 }

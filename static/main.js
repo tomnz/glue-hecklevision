@@ -18,6 +18,27 @@ const fetchMessages = async after => {
   return fetch(`/get?after=${after}`);
 };
 
+const newSpinnerEl = () => {
+  const spinnerEl = document.createElement('div');
+  spinnerEl.classList.add('pie');
+  spinnerEl.classList.add('spinner');
+
+  const fillerEl = document.createElement('div');
+  fillerEl.classList.add('pie');
+  fillerEl.classList.add('filler');
+
+  const maskEl = document.createElement('div');
+  maskEl.classList.add('mask');
+
+  const containerEl = document.createElement('div');
+  containerEl.classList.add('spinnerContainer');
+  containerEl.appendChild(spinnerEl);
+  containerEl.appendChild(fillerEl);
+  containerEl.appendChild(maskEl);
+
+  return containerEl;
+};
+
 const checkMessageOverload = () => {
   const messagesEl = document.getElementById('messages');
   if (messagesEl.children.length >= MESSAGE_OVERLOAD_HIGH) {
@@ -62,6 +83,7 @@ const updateMessages = () => {
       messageEl.appendChild(authorEl);
       messageEl.appendChild(document.createTextNode(': '));
       messageEl.appendChild(textEl);
+      messageEl.appendChild(newSpinnerEl());
 
       messagesEl.insertBefore(messageEl, messagesEl.children[0]);
 
