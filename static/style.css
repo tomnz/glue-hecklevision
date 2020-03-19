@@ -8,33 +8,28 @@ html, body {
 
 body {
     font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
-    font-size: 36pt;
-}
-
-.empty {
-    display: none !important;
+    font-size: 30pt;
+    color: #FFFFFF;
 }
 
 #container {
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    background-color: #000000;
-    color: #FFFFFF;
+    vertical-align: bottom;
+}
+
+#messages {
+    height: 200px;
     display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: flex-end;
 }
 
-#messageContainer {
-    flex-grow: 1;
-    text-align: center;
-}
-
-#messagesRemaining {
-    font-size: 16pt;
-    font-style: italic;
-    padding: 0 20px;
-    width: 200px;
+.message {
+    background-color: #000000;
+    margin: 0 auto;
+    display: inline-block;
 }
 
 .messageAuthor {
