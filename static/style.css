@@ -8,7 +8,7 @@ html, body {
 
 body {
     font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
-    font-size: 22pt;
+    font-size: 36pt;
 }
 
 .empty {
@@ -31,10 +31,10 @@ body {
 }
 
 #messagesRemaining {
-    font-size: 14pt;
+    font-size: 16pt;
     font-style: italic;
     padding: 0 20px;
-    width: 80px;
+    width: 200px;
 }
 
 .messageAuthor {
