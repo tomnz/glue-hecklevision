@@ -80,10 +80,10 @@ const updateMessages = () => {
       const messageEl = document.createElement('div');
       messageEl.classList.add('message');
 
+      messageEl.appendChild(newSpinnerEl());
       messageEl.appendChild(authorEl);
       messageEl.appendChild(document.createTextNode(': '));
       messageEl.appendChild(textEl);
-      messageEl.appendChild(newSpinnerEl());
 
       messagesEl.insertBefore(messageEl, messagesEl.children[0]);
 

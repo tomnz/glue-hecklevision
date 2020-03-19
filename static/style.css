@@ -25,20 +25,28 @@ body {
   flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
+  --message-padding: 5px 15px;
+  --text-buffer: 10px;
+  --spinner-size: 22px;
 }
 
 .message {
   background-color: #000000;
   margin: 0 auto;
-  padding: 5px 15px;
-  display: inline-block;
+  padding: var(--message-padding);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .messageAuthor {
+  margin-left: var(--text-buffer);
   font-style: italic;
 }
 
 .messageText {
+  margin-left: var(--text-buffer);
   font-weight: bold;
 }
 
@@ -48,18 +56,16 @@ padding for each message to make more space.
 */
 .messageOverloadLow {
   font-size: 20pt;
-}
-
-.messageOverloadLow > .message {
-  padding: 3px 12px !important;
+  --message-padding: 3px 12px !important;
+  --spinner-size: 18px !important;
+  --text-buffer: 8px !important;
 }
 
 .messageOverloadHigh {
   font-size: 14pt;
-}
-
-.messageOverloadHigh > .message {
-  padding: 1px 8px !important;
+  --message-padding: 1px 8px !important;
+  --spinner-size: 14px !important;
+  --text-buffer: 5px !important;
 }
 
 /*
@@ -69,31 +75,37 @@ Note that animation duration should match MESSAGE_SHOW_MS in main.js.
 
 .spinnerContainer {
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: var(--spinner-size);
+  height: var(--spinner-size);
   position: relative;
   background: #000000;
+  --spinner-radius: calc(var(--spinner-size)/2);
 }
 
 .spinnerContainer > .pie {
+  box-sizing: border-box;
   width: 50%;
   height: 100%;
   position: absolute;
-  background: #aadfaa;
+  background: #FFFFFF;
+  border: 1px solid #000000;
 }
 
 .spinnerContainer > .spinner {
-  border-radius: 0 10px 10px 0;
-  right: 0;
+  border-radius: 0 var(--spinner-radius) var(--spinner-radius) 0;
+  border-left: 0;
+  margin-left: 50%;
   z-index: 200;
+  transform-origin: left;
   animation: rota 20s linear;
 }
 
 .spinnerContainer > .filler {
-  border-radius: 10px 0 0 10px;
+  border-radius: var(--spinner-radius) 0 0 var(--spinner-radius);
+  border-right: 0;
   z-index: 100;
   animation: fill 20s steps(1, end);
-  left: 50%;
+  left: 0;
   opacity: 0;
 }
 
@@ -103,7 +115,7 @@ Note that animation duration should match MESSAGE_SHOW_MS in main.js.
   position: absolute;
   right: 0;
   z-index: 300;
-  opacity: 1;
+  opacity: 0;
   background: inherit;
   animation: mask 20s steps(1, end);
 }
