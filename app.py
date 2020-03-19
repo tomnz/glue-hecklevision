@@ -1,5 +1,6 @@
 import collections
 import os
+import random
 import time
 
 import flask
@@ -18,10 +19,25 @@ def cleanup_messages():
 
 
 class Message(object):
-    def __init__(self, author, text):
+    def __init__(self, author, text, timestamp):
         self.author = author
         self.text = text
-        self.timestamp = time.time()
+        self.timestamp = timestamp
+
+
+# Throttle users to the given time between posts
+USER_SILENCE_SECS = 4.0
+user_last_posted = collections.defaultdict(lambda: 0.0)
+
+
+SUCCESS_RESPONSES = [
+    'Got em!',
+    'Oh, so you think you\'re clever huh?',
+    'Let\'s see how that one lands...',
+    'One heckle, coming right up!',
+    'You make heckling look easy!',
+    'You funny mother fucker.',
+]
 
 
 @app.route('/post', methods=['POST'])
@@ -45,14 +61,25 @@ def post():
             'text': 'Hmm, I didn\'t get a user... Is this even possible??',
         })
 
+    timestamp = time.time()
+    last_posted = timestamp - user_last_posted[user_name]
+    if last_posted < USER_SILENCE_SECS:
+        return flask.jsonify({
+            'text': 'You can\'t heckle again so soon! Try again in {:.1f} seconds.'.format(
+                USER_SILENCE_SECS - last_posted)
+        })
+
     messages.append(Message(
         author=user_name,
         text=text,
+        timestamp=timestamp,
     ))
+    user_last_posted[user_name] = timestamp
     cleanup_messages()
 
     return flask.jsonify({
-        'text': 'Nice one! I\'ll show it soon!',
+        'text': '{}\nThere may be a short delay before your message appears, you don\'t need to retry.'.format(
+            random.choice(SUCCESS_RESPONSES)),
     })
 
 
