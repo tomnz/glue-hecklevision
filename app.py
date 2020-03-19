@@ -1,4 +1,5 @@
 import collections
+import os
 import time
 
 import flask
@@ -80,6 +81,13 @@ def index():
 if __name__ == '__main__':
     # Note that we use debug mode to get helpful errors, and so we can serve static content
     # directly from Flask. This app is realllly low stakes, so not concerned about it.
+    # TODO(tomnz): Look into serving static stuff with WhiteNoise?
+    # http://whitenoise.evans.io/en/stable/flask.html
     app.debug = True
 
-    app.run(host='0.0.0.0', port=80)
+    app.run(
+        # Listen on all interfaces
+        host='0.0.0.0',
+        # Grab the port from the environment if present (good for Heroku)
+        port=int(os.environ.get('PORT', 7000)),
+    )

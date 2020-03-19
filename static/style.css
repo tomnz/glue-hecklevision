@@ -8,7 +8,7 @@ html, body {
 
 body {
     font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
-    font-size: 24pt;
+    font-size: 28pt;
     color: #FFFFFF;
 }
 
@@ -19,18 +19,38 @@ body {
 }
 
 #messages {
-    height: 160px;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: flex-end;
+}
+
+/* Overload occurs when more than a certain number of messages appear */
+.messageOverloadLow {
+    font-size: 20pt;
+}
+
+.messageOverloadLow > .message {
+    padding: 3px 12px !important;
+}
+
+.messageOverloadHigh {
+    font-size: 14pt;
+}
+
+.messageOverloadHigh > .message {
+    padding: 1px 8px !important;
 }
 
 .message {
     background-color: #000000;
     margin: 0 auto;
+    padding: 5px 15px;
     display: inline-block;
 }
+
 
 .messageAuthor {
     font-style: italic;

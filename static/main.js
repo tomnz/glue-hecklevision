@@ -1,5 +1,7 @@
 const MESSAGE_POLL_MS = 1000;
 const MESSAGE_SHOW_MS = 20000;
+const MESSAGE_OVERLOAD_LOW = 3;
+const MESSAGE_OVERLOAD_HIGH = 5;
 
 let lastTimestamp = new Date().getTime() / 1000;
 
@@ -14,6 +16,25 @@ const stringToColor = (str) => {
 
 const fetchMessages = async after => {
   return fetch(`/get?after=${after}`);
+};
+
+const checkMessageOverload = () => {
+  const messagesEl = document.getElementById('messages');
+  if (messagesEl.children.length >= MESSAGE_OVERLOAD_HIGH) {
+    if (!messagesEl.classList.contains('messageOverloadHigh')) {
+      messagesEl.className = '';
+      messagesEl.classList.add('messageOverloadHigh');
+    }
+  } else if (messagesEl.children.length >= MESSAGE_OVERLOAD_LOW) {
+    if (!messagesEl.classList.contains('messageOverloadLow')) {
+      messagesEl.className = '';
+      messagesEl.classList.add('messageOverloadLow');
+    }
+  } else {
+    messagesEl.className = '';
+  }
+  // Scroll to the bottom of the page
+  window.scrollTo(0, document.body.scrollHeight);
 };
 
 const updateMessages = () => {
@@ -46,8 +67,10 @@ const updateMessages = () => {
 
       setTimeout(() => {
         messagesEl.removeChild(messageEl);
+        checkMessageOverload();
       }, MESSAGE_SHOW_MS)
     });
+    checkMessageOverload();
   });
 
   // Schedule the next update
