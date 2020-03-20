@@ -8,7 +8,7 @@ html, body {
 
 body {
   font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
-  font-size: 28pt;
+  font-size: 24pt;
   color: #FFFFFF;
 }
 
@@ -55,7 +55,7 @@ Overload occurs when more than a certain number of messages appear - we want to 
 padding for each message to make more space.
 */
 .messageOverloadLow {
-  font-size: 20pt;
+  font-size: 22pt;
   --message-padding: 3px 12px !important;
   --spinner-size: 18px !important;
   --text-buffer: 8px !important;
