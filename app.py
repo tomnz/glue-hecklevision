@@ -29,6 +29,9 @@ class Message(object):
 USER_SILENCE_SECS = 4.0
 user_last_posted = collections.defaultdict(lambda: 0.0)
 
+# Limit user message length
+MESSAGE_LENGTH_LIMIT = 200
+
 
 SUCCESS_RESPONSES = [
     'Got em!',
@@ -55,6 +58,11 @@ def post():
                     'you want to heckle with!',
         })
 
+    if len(text) > MESSAGE_LENGTH_LIMIT:
+        return flask.jsonify({
+            'text': 'Keep your rants to yourself. No more than {} characters please.'.format(MESSAGE_LENGTH_LIMIT),
+        })
+    
     user_name = data.get('user_name', None)
     if not user_name:
         return flask.jsonify({
