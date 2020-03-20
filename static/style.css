@@ -53,7 +53,9 @@ body {
 }
 
 .messageTime {
-  font-size: 12pt;
+  font-size: 11pt !important;
+  margin-right: var(--text-buffer);
+  color: #AAAAAA;
 }
 
 /*
