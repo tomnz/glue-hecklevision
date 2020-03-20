@@ -3,7 +3,7 @@ html, body {
   height: 100%;
   width: 100%;
   margin: 0;
-  overflow: hidden;
+  overflow: auto;
 }
 
 body {
@@ -30,14 +30,16 @@ body {
   --spinner-size: 22px;
 }
 
+.messagesAlignLeft {
+  align-items: flex-start !important;
+}
+
 .message {
   background-color: #000000;
-  margin: 0 auto;
   padding: var(--message-padding);
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
 }
 
 .messageAuthor {
@@ -48,6 +50,10 @@ body {
 .messageText {
   margin-left: var(--text-buffer);
   font-weight: bold;
+}
+
+.messageTime {
+  font-size: 12pt;
 }
 
 /*

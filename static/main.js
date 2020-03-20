@@ -18,6 +18,8 @@ const fetchMessages = async after => {
   return fetch(`/get?after=${after}`);
 };
 
+const keepMessages = new URLSearchParams(window.location.search).has('keep-messages');
+
 const newSpinnerEl = () => {
   const spinnerEl = document.createElement('div');
   spinnerEl.classList.add('pie');
@@ -43,16 +45,17 @@ const checkMessageOverload = () => {
   const messagesEl = document.getElementById('messages');
   if (messagesEl.children.length >= MESSAGE_OVERLOAD_HIGH) {
     if (!messagesEl.classList.contains('messageOverloadHigh')) {
-      messagesEl.className = '';
+      messagesEl.classList.remove('messageOverloadLow');
       messagesEl.classList.add('messageOverloadHigh');
     }
   } else if (messagesEl.children.length >= MESSAGE_OVERLOAD_LOW) {
     if (!messagesEl.classList.contains('messageOverloadLow')) {
-      messagesEl.className = '';
+      messagesEl.classList.remove('messageOverloadHigh');
       messagesEl.classList.add('messageOverloadLow');
     }
   } else {
-    messagesEl.className = '';
+    messagesEl.classList.remove('messageOverloadLow');
+    messagesEl.classList.remove('messageOverloadHigh');
   }
   // Scroll to the bottom of the page
   window.scrollTo(0, document.body.scrollHeight);
@@ -80,17 +83,26 @@ const updateMessages = () => {
       const messageEl = document.createElement('div');
       messageEl.classList.add('message');
 
-      messageEl.appendChild(newSpinnerEl());
+      if (keepMessages) {
+        const timeEl = document.createElement('span');
+        timeEl.innerText = new Date().toLocaleTimeString('en-US');
+        timeEl.classList.add('messageTime');
+        messageEl.appendChild(timeEl);
+      } else {
+        messageEl.appendChild(newSpinnerEl());
+      }
       messageEl.appendChild(authorEl);
       messageEl.appendChild(document.createTextNode(': '));
       messageEl.appendChild(textEl);
 
       messagesEl.appendChild(messageEl);
 
-      setTimeout(() => {
-        messagesEl.removeChild(messageEl);
-        checkMessageOverload();
-      }, MESSAGE_SHOW_MS)
+      if (!keepMessages) {
+        setTimeout(() => {
+          messagesEl.removeChild(messageEl);
+          checkMessageOverload();
+        }, MESSAGE_SHOW_MS);
+      }
     });
     checkMessageOverload();
   });
@@ -99,6 +111,8 @@ const updateMessages = () => {
   setTimeout(updateMessages, MESSAGE_POLL_MS);
 };
 
-window.onload = () => {
-  updateMessages();
-};
+if (keepMessages) {
+  const messagesEl = document.getElementById('messages');
+  messagesEl.classList.add('messagesAlignLeft');
+}
+updateMessages();
