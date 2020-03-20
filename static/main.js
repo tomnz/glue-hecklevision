@@ -85,7 +85,7 @@ const updateMessages = () => {
       messageEl.appendChild(document.createTextNode(': '));
       messageEl.appendChild(textEl);
 
-      messagesEl.insertBefore(messageEl, messagesEl.children[0]);
+      messagesEl.appendChild(messageEl);
 
       setTimeout(() => {
         messagesEl.removeChild(messageEl);
