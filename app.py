@@ -4,9 +4,38 @@ import random
 import time
 
 import flask
+import slack
+import slackeventsapi
 
+
+SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
+SLACK_SIGNING_SECRET = os.environ['SLACK_SIGNING_SECRET']
 
 app = flask.Flask(__name__)
+slack_client = slack.WebClient(token=SLACK_BOT_TOKEN)
+
+
+# Make sure we are joined to the main channel
+HECKLE_CHANNEL_NAME = 'heckle'
+HECKLE_CHANNEL = None
+for page in slack_client.conversations_list(types='public_channel'):
+    for channel in page['channels']:
+        if channel['name'] == HECKLE_CHANNEL_NAME:
+            HECKLE_CHANNEL = channel['id']
+            if not channel['is_member']:
+                slack_client.conversations_join(channel=HECKLE_CHANNEL)
+                break
+
+    if HECKLE_CHANNEL:
+        break
+
+
+# Build user list so we have usernames
+user_names_by_id = {}
+for page in slack_client.users_list():
+    for member in page['members']:
+        user_names_by_id[member['id']] = member['profile'].get('display_name', None) \
+            or member['profile']['real_name']
 
 
 MESSAGE_HISTORY = 100
@@ -43,51 +72,46 @@ SUCCESS_RESPONSES = [
 ]
 
 
-@app.route('/post', methods=['POST'])
-def post():
-    data = flask.request.form
-    text = data.get('text', None)
+slack_events_adapter = slackeventsapi.SlackEventAdapter(SLACK_SIGNING_SECRET, '/slack-actions', app)
+
+
+def heckle(user_id, text):
     if not text:
-        return flask.jsonify({
-            'text': 'You need to give me something to heckle with!',
-        })
+        return False, 'You need to give me something to heckle with!'
 
     if text.lower().startswith('help'):
-        return flask.jsonify({
-            'text': 'This is really easy, I promise. Just type `/heckle Wow this movie sucks!` or whatever '
-                    'you want to heckle with!',
-        })
+        return False, 'This is really easy, I promise. Just type `/heckle Wow this movie sucks!` or whatever ' \
+                      'you want to heckle with!'
 
     if len(text) > MESSAGE_LENGTH_LIMIT:
-        return flask.jsonify({
-            'text': 'Keep your rants to yourself. No more than {} characters please.'.format(MESSAGE_LENGTH_LIMIT),
-        })
-
-    user_name = data.get('user_name', None)
-    if not user_name:
-        return flask.jsonify({
-            'text': 'Hmm, I didn\'t get a user... Is this even possible??',
-        })
+        return False, 'Keep your rants to yourself. No more than {} characters please.'.format(MESSAGE_LENGTH_LIMIT)
 
     timestamp = time.time()
-    last_posted = timestamp - user_last_posted[user_name]
+    last_posted = timestamp - user_last_posted[user_id]
     if last_posted < USER_SILENCE_SECS:
-        return flask.jsonify({
-            'text': 'You can\'t heckle again so soon! Try again in {:.1f} seconds.'.format(
-                USER_SILENCE_SECS - last_posted)
-        })
+        return False, 'You can\'t heckle again so soon! Try again in {:.1f} seconds.'.format(
+            USER_SILENCE_SECS - last_posted)
 
+    user_name = user_names_by_id.get(user_id, 'UNKNOWN')
     messages.append(Message(
         author=user_name,
         text=text,
         timestamp=timestamp,
     ))
-    user_last_posted[user_name] = timestamp
+    user_last_posted[user_id] = timestamp
     cleanup_messages()
 
+    return True, '{}\nThere may be a short delay before your message appears, you don\'t need to retry.'.format(
+        random.choice(SUCCESS_RESPONSES))
+
+
+@app.route('/post', methods=['POST'])
+def post():
+    data = flask.request.form
+    user_id = data['user_id']
+    text = data.get('text', None)
     return flask.jsonify({
-        'text': '{}\nThere may be a short delay before your message appears, you don\'t need to retry.'.format(
-            random.choice(SUCCESS_RESPONSES)),
+        'text': heckle(user_id, text),
     })
 
 
