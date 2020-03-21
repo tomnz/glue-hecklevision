@@ -49,12 +49,12 @@ for page in slack_client.emoji_list():
 
 
 MESSAGE_HISTORY = 100
-messages = collections.deque()
+messages = []
 
 
 def cleanup_messages():
-    while len(messages) > MESSAGE_HISTORY:
-        messages.popleft()
+    global messages
+    messages = messages[-MESSAGE_HISTORY:]
 
 
 class Message(object):
@@ -120,8 +120,9 @@ def post():
     data = flask.request.form
     user_id = data['user_id']
     text = data.get('text', None)
+    _, response = heckle(user_id, text)
     return flask.jsonify({
-        'text': heckle(user_id, text),
+        'text': response,
     })
 
 
@@ -149,7 +150,35 @@ def index():
 
 @slack_events_adapter.on('message')
 def channel_message(data):
-    print(data)
+    message = data['event']
+    if message['channel'] != HECKLE_CHANNEL:
+        return
+    if not message.get('subtype', None):
+        # Not a plain message
+        return
+
+    user_id = message['user']
+    text = message['text']
+
+    success, response = heckle(user_id, text)
+    if success:
+        slack_client.reactions_add(
+            name='ok-hand',
+            channel=message['channel'],
+            timestamp=message['ts'],
+        )
+    else:
+        slack_client.reactions_add(
+            name='woman-gesturing-no',
+            channel=message['channel'],
+            timestamp=message['ts'],
+        )
+        slack_client.chat_postEphemeral(
+            channel=message['channel'],
+            user=user_id,
+            text=response,
+            icon_emoji=':woman-gesturing-no:',
+        )
 
 
 if __name__ == '__main__':
