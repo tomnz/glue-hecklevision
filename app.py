@@ -152,8 +152,10 @@ def index():
 def channel_message(data):
     message = data['event']
     if message['channel'] != HECKLE_CHANNEL:
+        print('different channel?')
         return
     if not message.get('subtype', None):
+        print('has subtype {}'.format(message['subtype']))
         # Not a plain message
         return
 
@@ -161,6 +163,7 @@ def channel_message(data):
     text = message['text']
 
     success, response = heckle(user_id, text)
+    print(response)
     if success:
         slack_client.reactions_add(
             name='ok-hand',
