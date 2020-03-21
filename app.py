@@ -163,7 +163,7 @@ def channel_message(data):
     success, response = heckle(user_id, text)
     if success:
         slack_client.reactions_add(
-            name='ok-hand',
+            name='ok_hand',
             channel=message['channel'],
             timestamp=message['ts'],
         )
