@@ -405,6 +405,7 @@ const builtinEmoji = {
   'hatching_chick': '&#x1F423;',
   'headphones': '&#x1F3A7;',
   'hear_no_evil': '&#x1F649;',
+  'heart': '&#x1FE0F;',
   'heart_decoration': '&#x1F49F;',
   'heart_eyes': '&#x1F60D;',
   'heart_eyes_cat': '&#x1F63B;',

@@ -1,6 +1,7 @@
 import collections
 import os
 import random
+import threading
 import time
 
 import flask
@@ -49,12 +50,8 @@ for page in slack_client.emoji_list():
 
 
 MESSAGE_HISTORY = 100
-messages = []
-
-
-def cleanup_messages():
-    global messages
-    messages = messages[-MESSAGE_HISTORY:]
+messages = collections.deque()
+message_lock = threading.RLock()
 
 
 class Message(object):
@@ -104,13 +101,16 @@ def heckle(user_id, text):
 
     user_name = user_names_by_id.get(user_id, 'UNKNOWN')
     print('[Saving message] {}: {}'.format(user_name, text))
-    messages.append(Message(
-        author=user_name,
-        text=text,
-        timestamp=timestamp,
-    ))
-    user_last_posted[user_id] = timestamp
-    cleanup_messages()
+    with message_lock:
+        messages.append(Message(
+            author=user_name,
+            text=text,
+            timestamp=timestamp,
+        ))
+        user_last_posted[user_id] = timestamp
+        # Cleanup old things
+        while len(messages) > MESSAGE_HISTORY:
+            messages.popleft()
 
     return True, '{}\nThere may be a short delay before your message appears, you don\'t need to retry.'.format(
         random.choice(SUCCESS_RESPONSES))
@@ -130,10 +130,11 @@ def post():
 @app.route('/get', methods=['GET'])
 def get():
     after = flask.request.args.get('after', None)
-    if after:
-        response_messages = filter(lambda msg: msg.timestamp > float(after), messages)
-    else:
-        response_messages = messages
+    with message_lock:
+        if after:
+            response_messages = filter(lambda msg: msg.timestamp > float(after), messages)
+        else:
+            response_messages = messages
 
     return flask.jsonify([
         {
