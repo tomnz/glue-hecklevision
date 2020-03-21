@@ -1,5 +1,4 @@
 import collections
-import logging
 import os
 import random
 import time
@@ -104,7 +103,7 @@ def heckle(user_id, text):
             USER_SILENCE_SECS - last_posted)
 
     user_name = user_names_by_id.get(user_id, 'UNKNOWN')
-    logging.info('[Saving message] {}: {}'.format(user_name, text))
+    print('[Saving message] {}: {}'.format(user_name, text))
     messages.append(Message(
         author=user_name,
         text=text,
@@ -143,6 +142,11 @@ def get():
             'timestamp': message.timestamp,
         } for message in response_messages
     ])
+
+
+@app.route('/emoji', methods=['GET'])
+def emoji():
+    return flask.jsonify(emojis_by_name)
 
 
 @app.route('/', methods=['GET'])

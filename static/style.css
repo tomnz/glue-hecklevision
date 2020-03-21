@@ -74,6 +74,10 @@ body {
   color: #AAAAAA;
 }
 
+.customEmoji {
+  height: 1em;
+}
+
 /*
 Overload occurs when more than a certain number of messages appear - we want to reduce the font size and
 padding for each message to make more space.
