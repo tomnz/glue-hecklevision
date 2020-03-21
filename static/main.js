@@ -996,6 +996,9 @@ let customEmoji = {};
 
 const replaceEmoji = (str) => {
   const emojis = str.match(/:[^:]*:/g);
+  if (!emojis) {
+    return str;
+  }
   emojis.forEach((emoji) => {
     // Strip :s
     const emojiName = emoji.slice(1, emoji.length-1);
