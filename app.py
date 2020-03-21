@@ -8,6 +8,7 @@ import slack
 import slackeventsapi
 
 
+# Tokens belonging to the bot
 SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
 SLACK_SIGNING_SECRET = os.environ['SLACK_SIGNING_SECRET']
 
@@ -36,6 +37,15 @@ for page in slack_client.users_list():
     for member in page['members']:
         user_names_by_id[member['id']] = member['profile'].get('display_name', None) \
             or member['profile']['real_name']
+
+
+# Build emoji list
+emojis_by_name = {}
+for page in slack_client.emoji_list():
+    for name, url in page['emoji'].items():
+        if url.startswith('alias:'):
+            continue
+        emojis_by_name[name] = url
 
 
 MESSAGE_HISTORY = 100
@@ -135,6 +145,11 @@ def get():
 @app.route('/', methods=['GET'])
 def index():
     return flask.render_template('index.html')
+
+
+@slack_events_adapter.on('message.channels')
+def channel_message(data):
+    print(data)
 
 
 if __name__ == '__main__':
