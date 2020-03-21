@@ -992,9 +992,6 @@ const fetchEmoji = async () => {
 };
 
 let customEmoji = {};
-fetchEmoji().then((resp) => resp.json()).then((data) => {
-  customEmoji = data;
-});
 
 const replaceEmoji = (str) => {
   const emojis = str.match(/:[^:]*:/g);
@@ -1011,6 +1008,12 @@ const replaceEmoji = (str) => {
     }
   });
   return str;
+};
+
+const escapeHTML = (str) => {
+  const el = document.createElement('textarea');
+  el.textContent = str;
+  return el.innerHTML;
 };
 
 const stringToColor = (str) => {
@@ -1082,7 +1085,7 @@ const updateMessages = () => {
       authorEl.classList.add('messageAuthor');
 
       const textEl = document.createElement('span');
-      textEl.innerHTML = replaceEmoji(message.text);
+      textEl.innerHTML = replaceEmoji(escapeHTML(message.text));
       textEl.classList.add('messageText');
       // Generate a random color based on username, because why not
       textEl.style.color = stringToColor(message.author);
@@ -1129,4 +1132,9 @@ if (historyMode) {
   messagesEl.classList.add('alignLeft');
 }
 
-updateMessages();
+const start = async () => {
+  customEmoji = await fetchEmoji().then((resp) => resp.json());
+  updateMessages();
+};
+
+start();
