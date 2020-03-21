@@ -9,7 +9,7 @@ import flask
 app = flask.Flask(__name__)
 
 
-MESSAGE_HISTORY = 20
+MESSAGE_HISTORY = 100
 messages = collections.deque()
 
 
@@ -30,7 +30,7 @@ USER_SILENCE_SECS = 4.0
 user_last_posted = collections.defaultdict(lambda: 0.0)
 
 # Limit user message length
-MESSAGE_LENGTH_LIMIT = 200
+MESSAGE_LENGTH_LIMIT = 100
 
 
 SUCCESS_RESPONSES = [
@@ -62,7 +62,7 @@ def post():
         return flask.jsonify({
             'text': 'Keep your rants to yourself. No more than {} characters please.'.format(MESSAGE_LENGTH_LIMIT),
         })
-    
+
     user_name = data.get('user_name', None)
     if not user_name:
         return flask.jsonify({

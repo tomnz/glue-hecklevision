@@ -1,28 +1,41 @@
 html, body {
   background-color: rgba(0, 0, 0, 0);
-  height: 100%;
   width: 100%;
   margin: 0;
   overflow: auto;
 }
 
+html {
+  height: 100%;
+}
+
 body {
+  min-height: 100vh;
   font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
   font-size: 24pt;
   color: #FFFFFF;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+.blackBackground {
+  background-color: #000000;
+}
+
 #container {
+  min-height: 100vh;
   width: 100%;
-  height: 100%;
-  vertical-align: bottom;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 #messages {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  flex-wrap: nowrap;
   align-items: center;
   justify-content: flex-end;
   --message-padding: 5px 15px;
@@ -30,7 +43,7 @@ body {
   --spinner-size: 22px;
 }
 
-.messagesAlignLeft {
+.alignLeft {
   align-items: flex-start !important;
 }
 
@@ -43,6 +56,7 @@ body {
 }
 
 .messageAuthor {
+  flex-shrink: 0;
   margin-left: var(--text-buffer);
   font-style: italic;
 }
@@ -50,10 +64,12 @@ body {
 .messageText {
   margin-left: var(--text-buffer);
   font-weight: bold;
+  line-height: 1.1em;
 }
 
 .messageTime {
-  font-size: 11pt !important;
+  flex-shrink: 0;
+  font-size: 10pt !important;
   margin-right: var(--text-buffer);
   color: #AAAAAA;
 }
@@ -71,7 +87,7 @@ padding for each message to make more space.
 
 .messageOverloadHigh {
   font-size: 14pt;
-  --message-padding: 1px 8px !important;
+  --message-padding: 2px 8px !important;
   --spinner-size: 14px !important;
   --text-buffer: 5px !important;
 }
@@ -83,6 +99,7 @@ Note that animation duration should match MESSAGE_SHOW_MS in main.js.
 
 .spinnerContainer {
   display: inline-block;
+  flex: 0 0 var(--spinner-size);
   width: var(--spinner-size);
   height: var(--spinner-size);
   position: relative;
@@ -91,7 +108,6 @@ Note that animation duration should match MESSAGE_SHOW_MS in main.js.
 }
 
 .spinnerContainer > .pie {
-  box-sizing: border-box;
   width: 50%;
   height: 100%;
   position: absolute;

@@ -3,22 +3,21 @@ const MESSAGE_SHOW_MS = 20000;
 const MESSAGE_OVERLOAD_LOW = 3;
 const MESSAGE_OVERLOAD_HIGH = 5;
 
-let lastTimestamp = new Date().getTime() / 1000;
-
 const stringToColor = (str) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const hue = (hash >> 7) % 360;
-  return `hsl(${hue}, 80%, 70%)`;
+  const hue = (hash >> 3) % 360;
+  return `hsl(${hue}, 100%, 75%)`;
 };
 
 const fetchMessages = async after => {
   return fetch(`/get?after=${after}`);
 };
 
-const keepMessages = new URLSearchParams(window.location.search).has('keep-messages');
+const historyMode = new URLSearchParams(window.location.search).has('history');
+let lastTimestamp = historyMode ? 0 : new Date().getTime() / 1000;
 
 const newSpinnerEl = () => {
   const spinnerEl = document.createElement('div');
@@ -41,6 +40,10 @@ const newSpinnerEl = () => {
   return containerEl;
 };
 
+const scrollToBottom = () => {
+  window.scrollTo(0, document.body.scrollHeight);
+};
+
 const checkMessageOverload = () => {
   const messagesEl = document.getElementById('messages');
   if (messagesEl.children.length >= MESSAGE_OVERLOAD_HIGH) {
@@ -57,8 +60,6 @@ const checkMessageOverload = () => {
     messagesEl.classList.remove('messageOverloadLow');
     messagesEl.classList.remove('messageOverloadHigh');
   }
-  // Scroll to the bottom of the page
-  window.scrollTo(0, document.body.scrollHeight);
 };
 
 const updateMessages = () => {
@@ -83,7 +84,7 @@ const updateMessages = () => {
       const messageEl = document.createElement('div');
       messageEl.classList.add('message');
 
-      if (keepMessages) {
+      if (historyMode) {
         const timeEl = document.createElement('span');
         timeEl.innerText = new Date().toLocaleTimeString('en-US');
         timeEl.classList.add('messageTime');
@@ -97,7 +98,7 @@ const updateMessages = () => {
 
       messagesEl.appendChild(messageEl);
 
-      if (!keepMessages) {
+      if (!historyMode) {
         setTimeout(() => {
           messagesEl.removeChild(messageEl);
           checkMessageOverload();
@@ -105,14 +106,20 @@ const updateMessages = () => {
       }
     });
     checkMessageOverload();
+    if (data.length > 0) {
+      scrollToBottom();
+    }
   });
 
   // Schedule the next update
   setTimeout(updateMessages, MESSAGE_POLL_MS);
 };
 
-if (keepMessages) {
+if (historyMode) {
+  window.document.body.classList.add('blackBackground');
+  const containerEl = document.getElementById('container');
+  containerEl.classList.add('alignLeft');
   const messagesEl = document.getElementById('messages');
-  messagesEl.classList.add('messagesAlignLeft');
+  messagesEl.classList.add('alignLeft');
 }
 updateMessages();
