@@ -147,7 +147,7 @@ def index():
     return flask.render_template('index.html')
 
 
-@slack_events_adapter.on('message.channels')
+@slack_events_adapter.on('message')
 def channel_message(data):
     print(data)
 
