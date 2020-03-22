@@ -29,7 +29,7 @@ The message should appear at the bottom of the page, and then disappear again af
 
 Project layout is straightforward, and hopefully the code is all easy to follow.
 
-* `static/main.js` - The main dynamic logic which powers the browser view. Takes care of polling for new messages, rendering them, and clearing them after the elapsed duration. It's vanilla JS, so there's some raw DOM manipulation. Shield your eyes.
+* `static/messages.js` - The main dynamic logic which powers the browser view. Takes care of polling for new messages, rendering them, and clearing them after the elapsed duration. It's vanilla JS, so there's some raw DOM manipulation. Shield your eyes.
 * `static/style.css` - Styling for all the elements.
 * `templates/index.html` - Basic page layout, which loads the JS/CSS. Shouldn't typically need modifying.
 * `app.py` - Flask-powered backend. Note that we are naughty and always run this in `debug` mode as this is required for Flask to host static files. The stakes are low, it should be fine.

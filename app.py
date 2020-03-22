@@ -123,7 +123,7 @@ def heckle(user_id, text, user_name=None):
 
 
 @app.route('/post', methods=['POST'])
-def post():
+def post_view():
     data = flask.request.form
     user_id = data['user_id']
     text = data.get('text', None)
@@ -134,7 +134,7 @@ def post():
 
 
 @app.route('/get', methods=['GET'])
-def get():
+def get_view():
     after = flask.request.args.get('after', None)
     with message_lock:
         if after:
@@ -151,18 +151,18 @@ def get():
     ])
 
 
-@app.route('/emoji', methods=['GET'])
-def emoji():
-    return flask.jsonify(emojis_by_name)
+@app.route('/messages', methods=['GET'])
+def messages_view():
+    return flask.render_template('messages.html')
 
 
 @app.route('/', methods=['GET'])
-def index():
-    return flask.render_template('index.html')
+def player_view():
+    return flask.render_template('player.html')
 
 
 @app.route('/submit', methods=['GET', 'POST'])
-def submit():
+def submit_view():
     if flask.request.method == 'POST':
         data = flask.request.form
         user_name = data['user_name']
@@ -174,6 +174,11 @@ def submit():
 
     # Manual endpoint for submitting
     return flask.render_template('submit.html')
+
+
+@app.route('/emoji', methods=['GET'])
+def emoji_view():
+    return flask.jsonify(emojis_by_name)
 
 
 handled_events = set()

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<head>
+  <title>Glue Hecklevision!</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/video-js@7.7.5.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/silvermine-videojs-chromecast@1.2.0.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/silvermine-videojs-airplay@1.0.0.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/videojs-hls-quality-selector@1.1.1.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}"/>
+  <link rel="stylesheet" href="{{ url_for('static', filename='player.css') }}"/>
+  <script src="{{ url_for('static', filename='vendor/video@7.7.5.min.js') }}"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body>
+  <div id="container">
+    <div id="header">
+      <p>
+        Join <code>#heckle</code> in Slack and send messages to start heckling!
+      </p>
+    </div>
+    <div id="playerContainer">
+      <div id="playerWrapper">
+        <video id="video" class="video-js vjs-default-skin">
+        </video>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='vendor/silvermine-videojs-chromecast@1.2.0.js') }}"></script>
+  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+  <script src="{{ url_for('static', filename='vendor/silvermine-videojs-airplay@1.1.0.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/videojs-contrib-quality-levels@2.0.9.js') }}"></script>
+  <script src="{{ url_for('static', filename='vendor/videojs-hls-quality-selector@1.1.1.js') }}"></script>
+
+  <script src="{{ url_for('static', filename='player.js') }}"></script>
+</body>
