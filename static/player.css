@@ -32,7 +32,7 @@ code {
 #header {
   flex-shrink: 1;
   text-align: center;
-  padding: var(--buffer);
+  padding: calc(var(--buffer)/3);
 }
 
 #header>h1 {
