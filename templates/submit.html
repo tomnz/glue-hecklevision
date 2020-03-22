@@ -7,12 +7,20 @@
 <body>
     <div id="container">
         <form method="post">
-            <p>Name</p>
-            <p><input aria-label="Name" type="text" name="user_name" id="userName" /></p>
-            <p>Message</p>
-            <p><input aria-label="Message" type="Text" name="text" id="text" /></p>
-            <p><button type="button" id="submit">Submit</button></p>
-            <p id="response"></p>
+            <div class="field">
+                <p>Name</p>
+                <p><input aria-label="Name" type="text" name="user_name" id="userName" /></p>
+            </div>
+            <div class="field">
+                <p>Message</p>
+                <p><input aria-label="Message" type="Text" name="text" id="text" /></p>
+            </div>
+            <div class="field">
+                <p><button type="button" id="submit">Submit</button></p>
+            </div>
+            <div class="field">
+                <p id="response"></p>
+            </div>
         </form>
     </div>
     <script type="text/javascript" src="{{ url_for('static', filename='submit.js') }}"></script>

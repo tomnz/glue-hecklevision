@@ -1,0 +1,15 @@
+body {
+  padding: 20px;
+  background-color: #111111;
+  color: #CCCCCC;
+  font-family: "Roboto", "Lucida Grande", "DejaVu Sans", "Bitstream Vera Sans", Verdana, Arial, sans-serif;
+  line-height: 1.2em;
+}
+
+p {
+  padding-bottom: 5px;
+}
+
+.field {
+  padding-bottom: 10px;
+}

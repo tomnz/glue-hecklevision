@@ -995,6 +995,7 @@ const fetchEmoji = async () => {
 let customEmoji = {};
 
 const replaceEmoji = (str) => {
+  console.log(str);
   const emojis = str.match(/:[^:]*:/g);
   if (!emojis) {
     return str;
@@ -1007,8 +1008,9 @@ const replaceEmoji = (str) => {
     } else if (emojiName in customEmoji) {
       str = str.replace(
         emoji,
-        `<img class="customEmoji" src="${customEmoji[emojiName]}" alt="${emoji}" />`
+        `<img class="customEmoji" src="${customEmoji[emojiName]}" alt="${emojiName}" />`
       );
+      console.log(str);
     }
   });
   return str;
@@ -1099,7 +1101,7 @@ const updateMessages = () => {
 
       if (historyMode) {
         const timeEl = document.createElement('span');
-        timeEl.innerText = new Date().toLocaleTimeString('en-US');
+        timeEl.innerText = new Date(message.timestamp * 1000).toLocaleTimeString('en-US');
         timeEl.classList.add('messageTime');
         messageEl.appendChild(timeEl);
       } else {

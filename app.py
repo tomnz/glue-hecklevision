@@ -1,6 +1,7 @@
 import collections
 import os
 import random
+import re
 import threading
 import time
 
@@ -62,7 +63,7 @@ class Message(object):
 
 
 # Throttle users to the given time between posts
-USER_SILENCE_SECS = 4.0
+USER_SILENCE_SECS = 0.5
 user_last_posted = collections.defaultdict(lambda: 0.0)
 
 # Limit user message length
@@ -90,18 +91,23 @@ def heckle(user_id, text, user_name=None):
         return False, 'This is really easy, I promise. Just type `/heckle Wow this movie sucks!` or whatever ' \
                       'you want to heckle with!'
 
-    if len(text) > MESSAGE_LENGTH_LIMIT:
+    # Kind of arbitrary, but count emojis as four characters only
+    text_len = len(re.sub(r':[^:]*:', 'xxxx', text))
+    if text_len > MESSAGE_LENGTH_LIMIT:
         return False, 'Keep your rants to yourself. No more than {} characters please.'.format(MESSAGE_LENGTH_LIMIT)
 
-    timestamp = time.time()
-    last_posted = timestamp - user_last_posted[user_id]
-    if last_posted < USER_SILENCE_SECS:
-        return False, 'You can\'t heckle again so soon! Try again in {:.1f} seconds.'.format(
-            USER_SILENCE_SECS - last_posted)
-
     user_name = user_name or user_names_by_id.get(user_id, 'UNKNOWN')
-    print('[Saving message] {}: {}'.format(user_name, text))
+
     with message_lock:
+        timestamp = time.time()
+
+        if user_id:
+            last_posted = timestamp - user_last_posted[user_id]
+            if last_posted < USER_SILENCE_SECS:
+                return False, 'You can\'t heckle again so soon! Try again in {:.1f} seconds.'.format(
+                    USER_SILENCE_SECS - last_posted)
+
+        print('[Saving message] {}: {}'.format(user_name, text))
         messages.append(Message(
             author=user_name,
             text=text,
@@ -170,8 +176,17 @@ def submit():
     return flask.render_template('submit.html')
 
 
+handled_events = set()
+event_lock = threading.Lock()
+
+
 @slack_events_adapter.on('message')
 def channel_message(data):
+    with event_lock:
+        if data['event_id'] in handled_events:
+            return
+        handled_events.add(data['event_id'])
+
     message = data['event']
     if message['channel'] != HECKLE_CHANNEL:
         return
@@ -183,13 +198,7 @@ def channel_message(data):
     text = message['text']
 
     success, response = heckle(user_id, text)
-    if success:
-        slack_client.reactions_add(
-            name='ok_hand',
-            channel=message['channel'],
-            timestamp=message['ts'],
-        )
-    else:
+    if not success:
         slack_client.reactions_add(
             name='woman-gesturing-no',
             channel=message['channel'],
