@@ -82,7 +82,7 @@ SUCCESS_RESPONSES = [
 slack_events_adapter = slackeventsapi.SlackEventAdapter(SLACK_SIGNING_SECRET, '/slack-actions', app)
 
 
-def heckle(user_id, text):
+def heckle(user_id, text, user_name=None):
     if not text:
         return False, 'You need to give me something to heckle with!'
 
@@ -99,7 +99,7 @@ def heckle(user_id, text):
         return False, 'You can\'t heckle again so soon! Try again in {:.1f} seconds.'.format(
             USER_SILENCE_SECS - last_posted)
 
-    user_name = user_names_by_id.get(user_id, 'UNKNOWN')
+    user_name = user_name or user_names_by_id.get(user_id, 'UNKNOWN')
     print('[Saving message] {}: {}'.format(user_name, text))
     with message_lock:
         messages.append(Message(
@@ -153,6 +153,21 @@ def emoji():
 @app.route('/', methods=['GET'])
 def index():
     return flask.render_template('index.html')
+
+
+@app.route('/submit', methods=['GET', 'POST'])
+def submit():
+    if flask.request.method == 'POST':
+        data = flask.request.form
+        user_name = data['user_name']
+        text = data['text']
+        _, response = heckle(None, text, user_name)
+        return flask.jsonify({
+            'text': response,
+        })
+
+    # Manual endpoint for submitting
+    return flask.render_template('submit.html')
 
 
 @slack_events_adapter.on('message')

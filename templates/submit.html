@@ -1,0 +1,19 @@
+<!doctype html>
+<head>
+    <title>Glue Hecklevision</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='submit.css') }}" />
+</head>
+<body>
+    <div id="container">
+        <form method="post">
+            <p>Name</p>
+            <p><input aria-label="Name" type="text" name="user_name" id="userName" /></p>
+            <p>Message</p>
+            <p><input aria-label="Message" type="Text" name="text" id="text" /></p>
+            <p><button type="button" id="submit">Submit</button></p>
+            <p id="response"></p>
+        </form>
+    </div>
+    <script type="text/javascript" src="{{ url_for('static', filename='submit.js') }}"></script>
+</body>
