@@ -1124,10 +1124,9 @@ const updateMessages = () => {
     if (data.length > 0) {
       scrollToBottom();
     }
+    // Schedule the next update
+    setTimeout(updateMessages, MESSAGE_POLL_MS);
   });
-
-  // Schedule the next update
-  setTimeout(updateMessages, MESSAGE_POLL_MS);
 };
 
 if (historyMode) {
