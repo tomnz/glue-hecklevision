@@ -20,7 +20,14 @@ window.addEventListener('load', () => {
       nativeAudioTracks: !videojs.browser.IS_ANY_SAFARI,
       nativeVideoTracks: !videojs.browser.IS_ANY_SAFARI,
     },
-    plugins: {},
+    plugins: {
+      chromecast: {
+        buttonPositionIndex: -2,
+        // Glue Cast app
+        receiverAppID: 'B42E7286',
+      },
+      airPlay: {},
+    },
   };
 
   const srcUrl = new URL(window.location.href);
@@ -28,18 +35,12 @@ window.addEventListener('load', () => {
 
   videojs(document.querySelector('#video'), options, function () {
     this.src({
-      src: srcUrl.toString(),
+      src: 'https://stream.tom.kiwi/live/movie.m3u8',
       type: 'application/x-mpegURL',
     });
     this.qualityLevels();
     this.hlsQualitySelector({
       displayCurrentQuality: true,
-    });
-    this.airPlay();
-    this.chromecast({
-      buttonPositionIndex: -2,
-      // Glue Cast app
-      receiverAppID: 'B42E7286',
     });
   });
 });
