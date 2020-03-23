@@ -128,6 +128,12 @@ def post_view():
     user_id = data['user_id']
     text = data.get('text', None)
     _, response = heckle(user_id, text)
+
+    slack_client.chat_postMessage(
+        channel=HECKLE_CHANNEL,
+        text='*{}*: {}'.format(user_names_by_id[user_id], text),
+    )
+
     return flask.jsonify({
         'text': response,
     })
@@ -168,6 +174,12 @@ def submit_view():
         user_name = data['user_name']
         text = data['text']
         _, response = heckle(None, text, user_name)
+
+        slack_client.chat_postMessage(
+            channel=HECKLE_CHANNEL,
+            text='*{}*: {}'.format(user_name, text),
+        )
+
         return flask.jsonify({
             'text': response,
         })
