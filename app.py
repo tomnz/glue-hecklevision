@@ -197,6 +197,10 @@ handled_events = set()
 event_lock = threading.Lock()
 
 
+USER_PATTERN = re.compile(r'<@([^>]*)>')
+CHANNEL_PATTERN = re.compile(r'<#[^>|]*\|([^>]*)>')
+
+
 @slack_events_adapter.on('message')
 def channel_message(data):
     with event_lock:
@@ -205,15 +209,20 @@ def channel_message(data):
         handled_events.add(data['event_id'])
 
     message = data['event']
-    print(message)
     if message['channel'] != HECKLE_CHANNEL:
         return
-    if message.get('subtype', None) or message.get('hidden', None):
+    if message.get('subtype', None) or message.get('hidden', None) or message.get('bot_id', None):
         # Not a plain message
         return
 
-    user_id = message['user']
     text = message['text']
+
+    # Replace user mentions with actual usernames
+    text = re.sub(USER_PATTERN, '@\1', text)
+    # Replace channel mentions with channel names
+    text = re.sub(CHANNEL_PATTERN, '#\1', text)
+
+    user_id = message['user']
 
     success, response = heckle(user_id, text)
     if not success:
