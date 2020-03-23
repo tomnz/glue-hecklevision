@@ -67,7 +67,7 @@ USER_SILENCE_SECS = 0.5
 user_last_posted = collections.defaultdict(lambda: 0.0)
 
 # Limit user message length
-MESSAGE_LENGTH_LIMIT = 100
+MESSAGE_LENGTH_LIMIT = 160
 
 
 SUCCESS_RESPONSES = [
