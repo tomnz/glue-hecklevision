@@ -205,9 +205,10 @@ def channel_message(data):
         handled_events.add(data['event_id'])
 
     message = data['event']
+    print(message)
     if message['channel'] != HECKLE_CHANNEL:
         return
-    if message.get('subtype', None):
+    if message.get('subtype', None) or message.get('hidden', None):
         # Not a plain message
         return
 
