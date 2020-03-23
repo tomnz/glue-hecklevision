@@ -1119,11 +1119,12 @@ const updateMessages = () => {
           checkMessageOverload();
         }, MESSAGE_SHOW_MS);
       }
+      if (data.length > 0) {
+        scrollToBottom();
+      }
     });
+  }).finally(() => {
     checkMessageOverload();
-    if (data.length > 0) {
-      scrollToBottom();
-    }
     // Schedule the next update
     setTimeout(updateMessages, MESSAGE_POLL_MS);
   });
