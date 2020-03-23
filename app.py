@@ -198,7 +198,7 @@ event_lock = threading.Lock()
 
 
 USER_PATTERN = re.compile(r'<@([^>]*)>')
-CHANNEL_PATTERN = re.compile(r'<#[^>|]*\|([^>]*)>')
+CHANNEL_PATTERN = re.compile(r'<#[^>|]*\|?([^>]*)>')
 
 
 @slack_events_adapter.on('message')
@@ -218,9 +218,9 @@ def channel_message(data):
     text = message['text']
 
     # Replace user mentions with actual usernames
-    text = re.sub(USER_PATTERN, '@\1', text)
+    text = re.sub(USER_PATTERN, lambda match: '@{}'.format(user_names_by_id.get(match.group(1), 'UNKNOWN')), text)
     # Replace channel mentions with channel names
-    text = re.sub(CHANNEL_PATTERN, '#\1', text)
+    text = re.sub(CHANNEL_PATTERN, lambda match: '#{}'.format(match.group(1) or 'UNKNOWN'), text)
 
     user_id = message['user']
 
