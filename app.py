@@ -14,6 +14,8 @@ import slackeventsapi
 SLACK_BOT_TOKEN = os.environ['SLACK_BOT_TOKEN']
 SLACK_SIGNING_SECRET = os.environ['SLACK_SIGNING_SECRET']
 
+ENABLE_BOT_RELAY = bool(os.environ.get('ENABLE_BOT_RELAY', False))
+
 app = flask.Flask(__name__)
 slack_client = slack.WebClient(token=SLACK_BOT_TOKEN)
 
@@ -129,10 +131,11 @@ def post_view():
     text = data.get('text', None)
     _, response = heckle(user_id, text)
 
-    slack_client.chat_postMessage(
-        channel=HECKLE_CHANNEL,
-        text='*{}*: {}'.format(user_names_by_id[user_id], text),
-    )
+    if ENABLE_BOT_RELAY:
+        slack_client.chat_postMessage(
+            channel=HECKLE_CHANNEL,
+            text='*{}*: {}'.format(user_names_by_id[user_id], text),
+        )
 
     return flask.jsonify({
         'text': response,
@@ -175,10 +178,11 @@ def submit_view():
         text = data['text']
         _, response = heckle(None, text, user_name)
 
-        slack_client.chat_postMessage(
-            channel=HECKLE_CHANNEL,
-            text='*{}*: {}'.format(user_name, text),
-        )
+        if ENABLE_BOT_RELAY:
+            slack_client.chat_postMessage(
+                channel=HECKLE_CHANNEL,
+                text='*{}*: {}'.format(user_name, text),
+            )
 
         return flask.jsonify({
             'text': response,
