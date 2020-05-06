@@ -10,7 +10,10 @@ let animatedEls = [];
 const container = document.getElementById('animatedEmojis');
 
 const animate = (lastTs) => (ts) => {
-  const elapsed = ts - lastTs;
+  let elapsed = 0.001;
+  if (lastTs > 0) {
+    elapsed = (ts - lastTs) / 1000.0;
+  }
 
   // Remove any expired els
   const newEls = [];
@@ -25,7 +28,7 @@ const animate = (lastTs) => (ts) => {
 
   // Animate
   animatedEls.forEach((animatedEl) => {
-    animatedEl.stepFn(animatedEl.el, elapsed);
+    animatedEl.stepFn(elapsed, (animatedEl.expiry - ts) / 1000.0);
   });
 
   if (animatedEls.length > 0) {
@@ -33,41 +36,69 @@ const animate = (lastTs) => (ts) => {
   }
 };
 
-const BOUNCE_GRAVITY = 1.0;
-const BOUNCE_REBOUND = 0.5;
-const animateBounce = (initX, initY, initVelX, initVelY) => (el, elapsed) => {
-  let x = initX;
-  let y = initY;
-  let velX = initVelX;
-  let velY = initVelY;
+const w = () => window.innerWidth;
+const h = () => window.innerHeight;
 
-  return (el, elapsed) => {
+const BOUNCE_GRAVITY = 50.0;
+const BOUNCE_REBOUND = 0.9;
+const BOUNCE_DAMP = 0.03;
+const BOUNCE_SIZE = 50;
+const BOUNCE_VEL_X_MIN = 5.0;
+const BOUNCE_VEL_X_VAR = 30.0;
+const BOUNCE_VEL_Y_MIN = -80.0;
+const BOUNCE_VEL_Y_VAR = 60.0;
+const BOUNCE_X = -10.0;
+const BOUNCE_X_VAR = 10.0;
+const BOUNCE_Y = 50.0;
+const BOUNCE_FADE = 0.5;
+
+
+const animateBounce = (el) => {
+  let x = BOUNCE_X + Math.random() * BOUNCE_X_VAR;
+  let y = BOUNCE_Y;
+  let velX = BOUNCE_VEL_X_MIN + Math.random() * BOUNCE_VEL_X_VAR;
+  let velY = BOUNCE_VEL_Y_MIN + Math.random() * BOUNCE_VEL_Y_VAR;
+
+  el.style.left = `${x}vw`;
+  el.style.top = `${y}vh`;
+  el.style.fontSize = `${BOUNCE_SIZE}px`;
+  el.style.height = `${BOUNCE_SIZE}px`;
+  el.style.width = `${BOUNCE_SIZE}px`;
+
+  const bottom = 100.0 - (BOUNCE_SIZE * 100.0 / h());
+
+  return (elapsed, remaining) => {
     velY += elapsed * BOUNCE_GRAVITY;
-    x += velX;
-    y += velY;
 
-    if (y < 0.0 || y > 100.0) {
-      y %= 100.0;
+    velX *= 1.0 - (BOUNCE_DAMP * elapsed);
+    velY *= 1.0 - (BOUNCE_DAMP * elapsed);
+
+    x += velX * elapsed;
+    y += velY * elapsed;
+
+    if (y > bottom) {
+      y = bottom * 2.0 - y;
       velY *= -BOUNCE_REBOUND;
+    }
+
+    let opacity = 1.0;
+    if (remaining < BOUNCE_FADE) {
+      opacity = remaining / BOUNCE_FADE;
     }
 
     el.style.left = `${x}vw`;
     el.style.top = `${y}vh`;
+    el.style.opacity = `${opacity}`;
   }
 }
 
-const ANIM_COUNT = 10;
-const ANIM_VEL_X_MIN = 15.0;
-const ANIM_VEL_X_VAR = 10.0;
-const ANIM_VEL_Y_MIN = -10.0;
-const ANIM_VEL_Y_VAR = 20.0;
-const ANIM_X = 0.0;
-const ANIM_Y = 50.0;
-const ANIM_LIFETIME = 3.0;
+const ANIM_COUNT = 20;
+const ANIM_LIFETIME = 8000.0;
 
 const animateEmoji = (emojiHTML) => {
   const triggerAnimationFrame = (animatedEls.length === 0);
-  const expiry = performance.now() + ANIM_LIFETIME;
+  const now = performance.now();
+  const expiry = now + ANIM_LIFETIME;
 
   for (let i = 0; i < ANIM_COUNT; i++) {
     const el = document.createElement('div');
@@ -75,22 +106,14 @@ const animateEmoji = (emojiHTML) => {
     el.innerHTML = emojiHTML;
     container.appendChild(el);
 
-    const x = ANIM_X;
-    const y = ANIM_Y;
-    const velX = ANIM_VEL_X_MIN + Math.random() * ANIM_VEL_X_VAR;
-    const velY = ANIM_VEL_Y_MIN + Math.random() * ANIM_VEL_Y_VAR;
-
-    el.style.left = `${x}vw`;
-    el.style.top = `${y}vh`;
-
     animatedEls.push(new AnimatedEl(
       el,
-      animateBounce(ANIM_X, ANIM_Y, velX, velY),
+      animateBounce(el),
       expiry,
     ));
   }
 
   if (triggerAnimationFrame) {
-    requestAnimationFrame(animate(performance.now()));
+    requestAnimationFrame(animate(0));
   }
 }

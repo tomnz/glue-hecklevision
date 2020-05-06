@@ -994,25 +994,36 @@ const fetchEmoji = async () => {
 
 let customEmoji = {};
 
+const emojiHtml = (emojiName) => {
+  if (emojiName in builtinEmoji) {
+    return builtinEmoji[emojiName];
+  } else if (emojiName in customEmoji) {
+    return `<img class="customEmoji" src="${customEmoji[emojiName]}" alt="${emojiName}" />`;
+  }
+  return '';
+}
+
 const replaceEmoji = (str) => {
-  console.log(str);
   const emojis = str.match(/:[^:]*:/g);
   if (!emojis) {
     return str;
   }
+  const firstEmoji = emojis[0];
+  let animate = false;
+  if (emojis.length > 2 && emojis.every((emoji) => emoji === firstEmoji)) {
+    animate = true;
+  }
+
   emojis.forEach((emoji) => {
     // Strip :s
     const emojiName = emoji.slice(1, emoji.length-1);
-    if (emojiName in builtinEmoji) {
-      str = str.replace(emoji, builtinEmoji[emojiName]);
-    } else if (emojiName in customEmoji) {
-      str = str.replace(
-        emoji,
-        `<img class="customEmoji" src="${customEmoji[emojiName]}" alt="${emojiName}" />`
-      );
-      console.log(str);
-    }
+    str = str.replace(emoji, emojiHtml(emojiName));
   });
+
+  if (animate) {
+    animateEmoji(emojiHtml(firstEmoji.slice(1, firstEmoji.length-1)));
+  }
+
   return str;
 };
 
@@ -1082,7 +1093,6 @@ const updateMessages = () => {
 
   fetchMessages(lastTimestamp).then((resp) => resp.json()).then((data) => {
     data.forEach((message) => {
-      //animateEmoji(replaceEmoji(':shrug:'));
       if (message.timestamp > lastTimestamp) {
         lastTimestamp = message.timestamp;
       }
