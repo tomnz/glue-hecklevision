@@ -1082,6 +1082,7 @@ const updateMessages = () => {
 
   fetchMessages(lastTimestamp).then((resp) => resp.json()).then((data) => {
     data.forEach((message) => {
+      //animateEmoji(replaceEmoji(':shrug:'));
       if (message.timestamp > lastTimestamp) {
         lastTimestamp = message.timestamp;
       }
