@@ -994,7 +994,7 @@ const fetchEmoji = async () => {
 
 let customEmoji = {};
 
-const emojiHtml = (emojiName) => {
+const emojiHTML = (emojiName) => {
   if (emojiName in builtinEmoji) {
     return builtinEmoji[emojiName];
   } else if (emojiName in customEmoji) {
@@ -1008,21 +1008,14 @@ const replaceEmoji = (str) => {
   if (!emojis) {
     return str;
   }
-  const firstEmoji = emojis[0];
-  let animate = false;
-  if (emojis.length > 2 && emojis.every((emoji) => emoji === firstEmoji)) {
-    animate = true;
-  }
 
   emojis.forEach((emoji) => {
     // Strip :s
     const emojiName = emoji.slice(1, emoji.length-1);
-    str = str.replace(emoji, emojiHtml(emojiName));
+    const html = emojiHTML(emojiName)
+    str = str.replace(emoji, html);
+    animateEmoji(html);
   });
-
-  if (animate) {
-    animateEmoji(emojiHtml(firstEmoji.slice(1, firstEmoji.length-1)));
-  }
 
   return str;
 };

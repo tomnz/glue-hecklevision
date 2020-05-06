@@ -39,14 +39,14 @@ const animate = (lastTs) => (ts) => {
 const w = () => window.innerWidth;
 const h = () => window.innerHeight;
 
-const BOUNCE_GRAVITY = 50.0;
+const BOUNCE_GRAVITY = 15.0;
 const BOUNCE_REBOUND = 0.9;
 const BOUNCE_DAMP = 0.03;
-const BOUNCE_SIZE = 50;
-const BOUNCE_VEL_X_MIN = 5.0;
-const BOUNCE_VEL_X_VAR = 30.0;
-const BOUNCE_VEL_Y_MIN = -80.0;
-const BOUNCE_VEL_Y_VAR = 60.0;
+const BOUNCE_SIZE = 80;
+const BOUNCE_VEL_X_MIN = 3.0;
+const BOUNCE_VEL_X_VAR = 15.0;
+const BOUNCE_VEL_Y_MIN = -50.0;
+const BOUNCE_VEL_Y_VAR = 50.0;
 const BOUNCE_X = -10.0;
 const BOUNCE_X_VAR = 10.0;
 const BOUNCE_Y = 50.0;
@@ -92,8 +92,8 @@ const animateBounce = (el) => {
   }
 }
 
-const ANIM_COUNT = 20;
-const ANIM_LIFETIME = 8000.0;
+const ANIM_COUNT = 6;
+const ANIM_LIFETIME = 10000.0;
 
 const animateEmoji = (emojiHTML) => {
   const triggerAnimationFrame = (animatedEls.length === 0);
