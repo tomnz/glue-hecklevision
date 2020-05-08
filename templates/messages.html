@@ -1,14 +1,15 @@
 <!doctype html>
 <head>
-    <title>Glue Hecklevision</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='messages.css') }}" />
+  <title>Glue Hecklevision</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='messages.css') }}" />
 </head>
 <body>
-    <div id="container">
-        <div id="messages"></div>
-        <div id="animatedEmojis"></div>
-    </div>
-    <script type="text/javascript" src="{{ url_for('static', filename='messagesAnimate.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='messages.js') }}"></script>
+  <div id="container">
+    <div id="messages"></div>
+    <div id="animatedEmojis"></div>
+  </div>
+  <script type="text/javascript" src="{{ url_for('static', filename='builtinEmojis.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='messagesAnimate.js') }}"></script>
+  <script type="text/javascript" src="{{ url_for('static', filename='messages.js') }}"></script>
 </body>
