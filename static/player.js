@@ -27,6 +27,9 @@ window.addEventListener('load', () => {
         receiverAppID: 'B42E7286',
       },
       airPlay: {},
+      persistVolume: {
+        namespace: 'hecklevision',
+      },
     },
   };
 
