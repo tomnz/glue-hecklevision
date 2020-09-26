@@ -33,9 +33,9 @@ window.addEventListener('load', () => {
   const srcUrl = new URL(window.location.href);
   srcUrl.pathname = '/live/movie.m3u8';
 
-  videojs(document.querySelector('#video'), options, function () {
+  videojs(document.querySelector('#video'), options, function() {
     this.src({
-      src: 'https://stream.tom.kiwi/live/movie.m3u8',
+      src: 'https://stream-remote.tom.kiwi/live/movie.m3u8',
       type: 'application/x-mpegURL',
     });
     this.qualityLevels();
