@@ -65,11 +65,11 @@ class Message(object):
 
 
 # Throttle users to the given time between posts
-USER_SILENCE_SECS = 0.5
+USER_SILENCE_SECS = 0.3
 user_last_posted = collections.defaultdict(lambda: 0.0)
 
 # Limit user message length
-MESSAGE_LENGTH_LIMIT = 160
+MESSAGE_LENGTH_LIMIT = 200
 
 
 SUCCESS_RESPONSES = [
