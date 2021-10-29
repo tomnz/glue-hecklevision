@@ -7,7 +7,7 @@ window.addEventListener('load', () => {
     liveui: true,
     techOrder: ['chromecast', 'html5'],
     chromecast: {
-      requestTitleFn: () => 'Glue Hecklevision',
+      requestTitleFn: () => 'Hecklevision',
     },
     html5: {
       hls: {
