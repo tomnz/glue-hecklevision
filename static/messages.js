@@ -51,9 +51,15 @@ const stringToColor = (str) => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash |= 0; // keep 32-bit
   }
-  const hue = (hash >> 3) % 360;
-  return `hsl(${hue}, 100%, 75%)`;
+
+  const hue = ((hash % 360) + 360) % 360;
+
+  const sat = 65 + (Math.abs(hash) % 20);     // 65–85%
+  const light = 55 + (Math.abs(hash >> 3) % 15); // 55–70%
+
+  return `hsl(${hue}, ${sat}%, ${light}%)`;
 };
 
 const historyMode = new URLSearchParams(window.location.search).has('history');
